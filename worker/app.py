@@ -9,13 +9,13 @@ except pika.exceptions.AMQPConnectionError as exc:
 
 channel = connection.channel()
 channel.exchange_declare(exchange='logs', exchange_type='fanout')
-result = channel.queue_declare(queue='', exclusive=True)
+result = channel.queue_declare(queue='', exclusive=True, durable=True)#Exclusive queues are deleted when their declaring connection is closed or gone
 queue_name = result.method.queue
 channel.queue_bind(exchange='logs', queue=queue_name)
 
 print("Waiting for message...")
 
-def callback(ch, method, properties, body):
+def callback(channel, method, properties, body):
     print(" Received %s" % body.decode())
     print(" Done")
 
