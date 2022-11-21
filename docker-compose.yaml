@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 27017:27017
+    volumes:
+      # named volumes
+      - ./mongodb:/app/data/db
+    restart: unless-stopped
+  
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+  
+  worker-1:
+    build: ./worker
+    volumes:
+      - ./worker:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+  
+  worker-2:
+    build: ./worker
+    volumes:
+      - ./worker:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+  
+  server:
+    build: ./server
+    volumes:
+      - ./server:/app
+    ports:
+      - '5000:5000'
+volumes:
+  # default dir on Ubuntu: /var/lib/docker/volumes
+  mongodb:
