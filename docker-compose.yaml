@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  db:
+  mongodb:
     image: mongo:latest
     container_name: mongodb
     environment:
@@ -10,9 +10,10 @@ services:
     ports:
       - 27017:27017
     volumes:
-      # named volumes
       - ./mongodb:/app/data/db
     restart: unless-stopped
+    networks:
+      - training
   
   rabbitmq:
     image: 'rabbitmq:3-management'
@@ -20,27 +21,52 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+    networks:
+      - training
   
   worker-1:
+    container_name: worker-1
     build: ./worker
     volumes:
       - ./worker:/app
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - rabbitmq
+      - mongodb
+    networks:
+      - training
   
   worker-2:
+    container_name: worker-2
     build: ./worker
     volumes:
       - ./worker:/app
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - rabbitmq
+      - mongodb
+    networks:
+      - training
   
   server:
+    container_name: server
     build: ./server
     volumes:
       - ./server:/app
     ports:
       - '5000:5000'
+    depends_on:
+      - rabbitmq
+      - mongodb
+    networks:
+      - training
+
 volumes:
-  # default dir on Ubuntu: /var/lib/docker/volumes
   mongodb:
+
+networks:
+  training:
+    name: training
+    driver: bridge
