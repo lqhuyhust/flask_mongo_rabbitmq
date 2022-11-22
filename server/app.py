@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from db import db
+from flask_marshmallow import Marshmallow
 
 app = Flask(__name__)
 api = Api(app)
@@ -14,6 +15,7 @@ app.config["MONGODB_SETTINGS"] = [
     }   
 ]
 db.init_app(app)
+ma = Marshmallow(app)
 
 from resources.message import SendMessage
 api.add_resource(SendMessage, '/messages')
