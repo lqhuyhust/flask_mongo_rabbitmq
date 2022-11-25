@@ -1,0 +1,50 @@
+schemes:
+  - "http"
+  - "https"
+produces:
+  - "application/json"
+  - "text/plain"
+consumes:
+  - "application/json"
+  - "text/plain"
+servers:
+  - url: http://localhost:5000/
+    description: API endpoint for testing
+info:
+  title: "Flask Training API Documents"
+  version: "1.0"
+  x-logo:
+    url: "https://bizflycloud.vn/images/BizFly-Cloud.svg"
+  description: |
+    # Không có gì để giới thiệu
+  contact:
+    email: huylequang@vccorp.vn
+tags:
+  - name: "Messages"
+    x-displayName: "Quản lý các tin nhắn"
+components:
+  schemas:
+    BodyMessage:
+      title: Tạo mới Message
+      type: object
+      properties:
+        message:
+          type: object
+          description: Thông tin message
+          properties:
+            title:
+              type: string
+              description: Tiêu đề message
+              example: Tin nhắn 1
+            content:
+              type: string
+              description: Nội dung tin nhắn
+              example: Tối mai đi chơi không?
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Thông báo lỗi
+          example: Có lỗi xảy ra trên hệ thống
